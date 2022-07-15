@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import { makeShuffledDeck } from "./utils.js";
+import { Container, Row, Col } from "react-bootstrap";
 
 class App extends React.Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class App extends React.Component {
       numberOfRound: 0,
       finalWinner: "",
       nameButton: "Deal",
+      player1GameCount: 0,
+      player2GameCount: 0,
     };
   }
 
@@ -68,19 +71,23 @@ class App extends React.Component {
     if (this.state.winner1Count > this.state.winner2Count) {
       this.setState({
         finalWinner: "Congratulations, Player 1 wins the game!!",
+        player1GameCount: this.state.player1GameCount + 1,
       });
     } else if (this.state.winner1Count < this.state.winner2Count) {
       this.setState({
         finalWinner: "Congratulations, Player 2 wins the game!!",
+        player2GameCount: this.state.player2GameCount + 1,
       });
     } else if (this.state.winner1Count === this.state.winner2Count) {
       if (this.state.currCards[0].rank > this.state.currCards[1].rank) {
         this.setState({
           finalWinner: "Congratulations, Player 1 wins the game!!",
+          player1GameCount: this.state.player1GameCount + 1,
         });
       } else if (this.state.currCards[0].rank < this.state.currCards[1].rank) {
         this.setState({
           finalWinner: "Congratulations, Player 2 wins the game!!",
+          player2GameCount: this.state.player2GameCount + 1,
         });
       } else {
         this.setState({ finalWinner: "The game ends in a draw. SADGE" });
@@ -125,9 +132,14 @@ class App extends React.Component {
   render() {
     const currCardElems = this.state.currCards.map(({ name, suit }) => (
       // Give each list element a unique key
-      <li key={`${name}${suit}`}>
-        {name} of {suit}
-      </li>
+      <Container>
+        <Col className="col-7">
+          {/* <Row>Player Card</Row> */}
+          <Row key={`${name}${suit}`}>
+            {name} of {suit}
+          </Row>
+        </Col>
+      </Container>
     ));
 
     return (
@@ -137,7 +149,19 @@ class App extends React.Component {
           <div>
             <u>Players' Cards</u>
           </div>
-          <ol>{currCardElems}</ol>
+          <Container>
+            <Row>
+              <Col className="col-5">
+                <Row style={{ display: "flex", justifyContent: "right" }}>
+                  Player 1:
+                </Row>
+                <Row style={{ display: "flex", justifyContent: "right" }}>
+                  Player 2:
+                </Row>
+              </Col>
+              <Col>{currCardElems}</Col>
+            </Row>
+          </Container>
           <button onClick={this.dealCards}>{this.state.nameButton}</button>
           <br />
           <div>
@@ -145,8 +169,17 @@ class App extends React.Component {
           </div>
           <div>{this.state.currWinner}</div>
           <br />
-          <div>Rounds won by Player 1: {this.state.winner1Count}</div>
-          <div>Rounds won by Player 2: {this.state.winner2Count}</div>
+          <div>
+            <u>Rounds Won</u>
+          </div>
+          <div>Player 1: {this.state.winner1Count}</div>
+          <div>Player 2: {this.state.winner2Count}</div>
+          <br />
+          <div>
+            <u>Games Won</u>
+          </div>
+          <div>Player 1: {this.state.player1GameCount}</div>
+          <div>Player 2: {this.state.player2GameCount}</div>
           <br />
           <div>{this.state.finalWinner}</div>
         </header>
